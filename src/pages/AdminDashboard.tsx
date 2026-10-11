@@ -81,6 +81,27 @@ export default function AdminDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Setup Instructions */}
+        {departments.length === 0 && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                <Settings className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-1">Getting Started</h3>
+                <p className="text-sm text-blue-700">
+                  Welcome! To set up your institute, follow these steps:<br />
+                  <strong>1.</strong> Add departments first (go to Departments tab)<br />
+                  <strong>2.</strong> Approve faculty members and assign them to departments (go to Users tab)<br />
+                  <strong>3.</strong> Add courses to departments (go to Courses tab)<br />
+                  <strong>4.</strong> Enroll students in courses (go to Students tab)
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Enhanced Tab Navigation */}
         <div className="flex gap-2 mb-8 bg-white rounded-2xl p-2 shadow-lg border border-gray-100 overflow-x-auto">
           {[

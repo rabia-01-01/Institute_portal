@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
-import { Upload, FileText, Users, BookOpen, Plus, Check, X, ArrowLeft, Briefcase, TrendingUp } from 'lucide-react';
+import { Upload, FileText, Users, BookOpen, Plus, Check, X, ArrowLeft, Briefcase, TrendingUp, Settings } from 'lucide-react';
 
 export default function FacultyDashboard() {
   const { user } = useAuth();
@@ -16,8 +16,10 @@ export default function FacultyDashboard() {
   const [formData, setFormData] = useState({ title: '', courseId: '', type: 'pdf' as const, description: '', file: null as File | null });
   const [courseForm, setCourseForm] = useState({ code: '', name: '', batch: 2024, credits: 3, description: '' });
   const [courseSuccess, setCourseSuccess] = useState('');
+  const [courseError, setCourseError] = useState('');
   const [annForm, setAnnForm] = useState({ title: '', content: '', category: 'general' as const, priority: 'medium' as const });
   const [annSuccess, setAnnSuccess] = useState('');
+  const [annError, setAnnError] = useState('');
 
   const myDepartment = user?.department || '';
   const departmentCourses = user && myDepartment ? courses.filter(c => {
@@ -53,22 +55,77 @@ export default function FacultyDashboard() {
 
   const handleAddCourse = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    setCourseError('');
+    setCourseSuccess('');
+    
+    if (!user) {
+      setCourseError('User not authenticated');
+      return;
+    }
+    
+    if (!myDepartment) {
+      setCourseError('You must have a department assigned to add courses. Please contact admin.');
+      return;
+    }
+    
     const dept = departments.find(d => d.name === myDepartment);
-    if (!dept) return;
-    addCourse({ code: courseForm.code, name: courseForm.name, departmentId: dept.id, batch: courseForm.batch, credits: courseForm.credits, facultyId: user.id, description: courseForm.description });
-    setCourseSuccess('Course added!');
+    if (!dept) {
+      setCourseError('Department not found. Please contact admin.');
+      return;
+    }
+    
+    if (!courseForm.code || !courseForm.name) {
+      setCourseError('Please fill in all required fields');
+      return;
+    }
+    
+    addCourse({ 
+      code: courseForm.code, 
+      name: courseForm.name, 
+      departmentId: dept.id, 
+      batch: courseForm.batch, 
+      credits: courseForm.credits, 
+      facultyId: user.id, 
+      description: courseForm.description 
+    });
+    
+    setCourseSuccess('Course added successfully!');
     setCourseForm({ code: '', name: '', batch: 2024, credits: 3, description: '' });
-    setTimeout(() => setCourseSuccess(''), 3000);
+    setTimeout(() => {
+      setCourseSuccess('');
+      setActiveTab('overview');
+    }, 2000);
   };
 
   const handleAddAnnouncement = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
-    addAnnouncement({ title: annForm.title, content: annForm.content, category: annForm.category, priority: annForm.priority, authorId: user.id });
-    setAnnSuccess('Announcement published!');
+    setAnnError('');
+    setAnnSuccess('');
+    
+    if (!user) {
+      setAnnError('User not authenticated');
+      return;
+    }
+    
+    if (!annForm.title || !annForm.content) {
+      setAnnError('Please fill in all required fields');
+      return;
+    }
+    
+    addAnnouncement({ 
+      title: annForm.title, 
+      content: annForm.content, 
+      category: annForm.category, 
+      priority: annForm.priority, 
+      authorId: user.id 
+    });
+    
+    setAnnSuccess('Announcement published successfully!');
     setAnnForm({ title: '', content: '', category: 'general', priority: 'medium' });
-    setTimeout(() => setAnnSuccess(''), 3000);
+    setTimeout(() => {
+      setAnnSuccess('');
+      setActiveTab('overview');
+    }, 2000);
   };
 
   return (
@@ -107,6 +164,43 @@ export default function FacultyDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Setup Instructions for Faculty */}
+        {!myDepartment && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
+                <Settings className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-amber-900 mb-1">Action Required</h3>
+                <p className="text-sm text-amber-700">
+                  Your account needs a department assignment before you can add courses or resources.<br />
+                  Please contact the administrator to assign you to a department.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {myDepartment && departments.length === 0 && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                <Settings className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-1">Getting Started</h3>
+                <p className="text-sm text-blue-700">
+                  As a faculty member, you can:<br />
+                  <strong>1.</strong> Add courses to your department (go to "Add Course" tab)<br />
+                  <strong>2.</strong> Upload resources like PDFs, notes, and videos (go to "Upload" tab)<br />
+                  <strong>3.</strong> Publish announcements for students (go to "Announcement" tab)
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Enhanced Tab Navigation */}
         <div className="flex gap-2 mb-8 bg-white rounded-2xl p-2 shadow-lg border border-gray-100 overflow-x-auto">
           {[
@@ -329,10 +423,21 @@ export default function FacultyDashboard() {
                 </h3>
               </div>
               <div className="p-8">
+                {!myDepartment && (
+                  <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm">
+                    <strong>Note:</strong> You must have a department assigned to add courses. Please contact admin to assign your department.
+                  </div>
+                )}
                 {courseSuccess && (
                   <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
                     <Check className="w-5 h-5" />
                     {courseSuccess}
+                  </div>
+                )}
+                {courseError && (
+                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2">
+                    <X className="w-5 h-5" />
+                    {courseError}
                   </div>
                 )}
                 <form onSubmit={handleAddCourse} className="space-y-6">
@@ -417,6 +522,12 @@ export default function FacultyDashboard() {
                   <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
                     <Check className="w-5 h-5" />
                     {annSuccess}
+                  </div>
+                )}
+                {annError && (
+                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2">
+                    <X className="w-5 h-5" />
+                    {annError}
                   </div>
                 )}
                 <form onSubmit={handleAddAnnouncement} className="space-y-6">
