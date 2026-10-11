@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import DataSavedIndicator from './components/DataSavedIndicator';
 
 // Public Pages
 import Home from './pages/Home';
@@ -12,6 +13,7 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Departments from './pages/Departments';
+import DepartmentDetail from './pages/DepartmentDetail';
 import Courses from './pages/Courses';
 import Faculty from './pages/Faculty';
 import Announcements from './pages/Announcements';
@@ -34,14 +36,12 @@ function ScrollToTop() {
 
 function AppContent() {
   const location = useLocation();
-  const isDashboard = location.pathname.startsWith('/student') || 
-                      location.pathname.startsWith('/faculty-dashboard') || 
-                      location.pathname.startsWith('/admin');
 
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
-      {!isDashboard && <Navbar />}
+      <DataSavedIndicator />
+      <Navbar />
       <main className="flex-1">
         <Routes>
           {/* Public Routes */}
@@ -50,6 +50,7 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/departments" element={<Departments />} />
+          <Route path="/departments/:id" element={<DepartmentDetail />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/faculty" element={<Faculty />} />
           <Route path="/announcements" element={<Announcements />} />
@@ -75,7 +76,7 @@ function AppContent() {
           } />
         </Routes>
       </main>
-      {!isDashboard && <Footer />}
+      <Footer />
     </div>
   );
 }

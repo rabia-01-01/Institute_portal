@@ -7,6 +7,7 @@ interface AuthContextType {
   login: (email: string, password: string) => { success: boolean; error?: string };
   register: (data: RegisterData) => { success: boolean; error?: string };
   logout: () => void;
+  updateUser: (id: string, data: Partial<User>) => void;
 }
 
 interface RegisterData {
@@ -27,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem('institute_current_user');
     return saved ? JSON.parse(saved) : null;
   });
-  const { users, addUser } = useData();
+  const { users, addUser, updateUser: updateUserData } = useData();
 
   const login = (email: string, password: string) => {
     const foundUser = users.find(u => u.email === email && u.password === password);
@@ -51,8 +52,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('institute_current_user');
   };
 
+  const updateUser = (id: string, data: Partial<User>) => {
+    updateUserData(id, data);
+    // Update current user if it's the logged-in user
+    if (user && user.id === id) {
+      const updatedUser = { ...user, ...data };
+      setUser(updatedUser);
+      localStorage.setItem('institute_current_user', JSON.stringify(updatedUser));
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
