@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import DataSavedIndicator from './components/DataSavedIndicator';
 
 // Public Pages
 import Home from './pages/Home';
@@ -41,6 +42,7 @@ function AppContent() {
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
+      <DataSavedIndicator />
       {!isDashboard && <Navbar />}
       <main className="flex-1">
         <Routes>

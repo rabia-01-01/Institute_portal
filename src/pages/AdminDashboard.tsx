@@ -18,11 +18,25 @@ export default function AdminDashboard() {
   const [annForm, setAnnForm] = useState({ title: '', content: '', category: 'general' as const, priority: 'medium' as const });
   const [calForm, setCalForm] = useState({ title: '', date: '', endDate: '', type: 'event' as const, description: '' });
   const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ type: string; id: string; name: string } | null>(null);
 
   const handleAddDepartment = (e: React.FormEvent) => { e.preventDefault(); addDepartment(deptForm); setDeptForm({ name: '', code: '', description: '' }); setShowForm(''); };
   const handleAddCourse = (e: React.FormEvent) => { e.preventDefault(); addCourse(courseForm); setCourseForm({ code: '', name: '', departmentId: '', batch: 2024, credits: 3, facultyId: '', description: '' }); setShowForm(''); };
   const handleAddAnnouncement = (e: React.FormEvent) => { e.preventDefault(); addAnnouncement({ ...annForm, authorId: user!.id }); setAnnForm({ title: '', content: '', category: 'general', priority: 'medium' }); setShowForm(''); };
   const handleAddCalendarEvent = (e: React.FormEvent) => { e.preventDefault(); addCalendarEvent({ ...calForm, createdBy: user!.id }); setCalForm({ title: '', date: '', endDate: '', type: 'event', description: '' }); setShowForm(''); };
+
+  const handleConfirmDelete = () => {
+    if (!deleteConfirm) return;
+    switch (deleteConfirm.type) {
+      case 'user': deleteUser(deleteConfirm.id); break;
+      case 'department': deleteDepartment(deleteConfirm.id); break;
+      case 'course': deleteCourse(deleteConfirm.id); break;
+      case 'announcement': deleteAnnouncement(deleteConfirm.id); break;
+      case 'calendarEvent': deleteCalendarEvent(deleteConfirm.id); break;
+      case 'resource': deleteResource(deleteConfirm.id); break;
+    }
+    setDeleteConfirm(null);
+  };
 
   const pendingUsers = users.filter(u => !u.approved);
   const approvedStudents = users.filter(u => u.role === 'student' && u.approved);
@@ -35,6 +49,12 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <h1 className="text-2xl font-bold text-[#1a2744]">Admin Dashboard</h1>
           <p className="text-sm text-gray-500 mt-1">Welcome, {user?.name}</p>
+          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-xs text-blue-700">
+              <strong>🔒 Data Persistence:</strong> All data (users, departments, courses, etc.) is automatically saved to your browser's local storage and will persist between sessions. 
+              <strong>⚠️ Admin Only:</strong> Only administrators can delete profiles, departments, courses, and other data.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -74,7 +94,7 @@ export default function AdminDashboard() {
                       <div><p className="font-medium text-gray-700">{u.name}</p><p className="text-xs text-gray-500">{u.email} • {u.role}</p></div>
                       <div className="flex gap-2">
                         <button onClick={() => approveUser(u.id)} className="p-1.5 bg-green-100 hover:bg-green-200 rounded text-green-700"><Check className="w-4 h-4" /></button>
-                        <button onClick={() => deleteUser(u.id)} className="p-1.5 bg-red-100 hover:bg-red-200 rounded text-red-700"><Trash2 className="w-4 h-4" /></button>
+                        <button onClick={() => setDeleteConfirm({ type: 'user', id: u.id, name: u.name })} className="p-1.5 bg-red-100 hover:bg-red-200 rounded text-red-700"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </div>
                   ))}
@@ -104,7 +124,7 @@ export default function AdminDashboard() {
                 <div key={dept.id} className="bg-white border border-gray-200 rounded-xl p-5">
                   <div className="flex items-start justify-between">
                     <div><h4 className="font-semibold text-[#1a2744]">{dept.name}</h4><p className="text-xs text-teal-600 font-medium">{dept.code}</p><p className="text-sm text-gray-500 mt-1">{dept.description}</p></div>
-                    <button onClick={() => deleteDepartment(dept.id)} className="p-1.5 hover:bg-red-50 rounded text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => setDeleteConfirm({ type: 'department', id: dept.id, name: dept.name })} className="p-1.5 hover:bg-red-50 rounded text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
               ))}
@@ -142,7 +162,7 @@ export default function AdminDashboard() {
                 <div key={course.id} className="bg-white border border-gray-200 rounded-xl p-5">
                   <div className="flex items-start justify-between mb-2">
                     <span className="px-2 py-0.5 bg-teal-50 text-teal-700 text-xs font-bold rounded">{course.code}</span>
-                    <button onClick={() => deleteCourse(course.id)} className="p-1 hover:bg-red-50 rounded text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => setDeleteConfirm({ type: 'course', id: course.id, name: course.name })} className="p-1 hover:bg-red-50 rounded text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
                   </div>
                   <h4 className="font-semibold text-[#1a2744]">{course.name}</h4>
                   <p className="text-xs text-gray-500 mt-1">Batch {course.batch} • {course.credits} credits</p>
@@ -183,7 +203,7 @@ export default function AdminDashboard() {
                     <td className="py-3 px-4">
                       <div className="flex gap-1">
                         {!u.approved && <button onClick={() => approveUser(u.id)} className="p-1 bg-green-100 hover:bg-green-200 rounded text-green-700"><Check className="w-3.5 h-3.5" /></button>}
-                        {u.id !== user?.id && <button onClick={() => deleteUser(u.id)} className="p-1 bg-red-100 hover:bg-red-200 rounded text-red-700"><Trash2 className="w-3.5 h-3.5" /></button>}
+                        {u.id !== user?.id && <button onClick={() => setDeleteConfirm({ type: 'user', id: u.id, name: u.name })} className="p-1 bg-red-100 hover:bg-red-200 rounded text-red-700"><Trash2 className="w-3.5 h-3.5" /></button>}
                       </div>
                     </td>
                   </tr>
@@ -260,7 +280,7 @@ export default function AdminDashboard() {
               {announcements.map(ann => (
                 <div key={ann.id} className="bg-white border border-gray-200 rounded-xl p-5 flex items-start justify-between">
                   <div><h4 className="font-semibold text-[#1a2744]">{ann.title}</h4><p className="text-sm text-gray-500 mt-1">{ann.content}</p><p className="text-xs text-gray-400 mt-2">{new Date(ann.createdAt).toLocaleDateString()}</p></div>
-                  <button onClick={() => deleteAnnouncement(ann.id)} className="p-1.5 hover:bg-red-50 rounded text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
+                  <button onClick={() => setDeleteConfirm({ type: 'announcement', id: ann.id, name: ann.title })} className="p-1.5 hover:bg-red-50 rounded text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
                 </div>
               ))}
             </div>
@@ -290,7 +310,7 @@ export default function AdminDashboard() {
               {calendarEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map(event => (
                 <div key={event.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between">
                   <div><p className="font-medium text-[#1a2744]">{event.title}</p><p className="text-xs text-gray-500">{event.date}</p></div>
-                  <button onClick={() => deleteCalendarEvent(event.id)} className="p-1.5 hover:bg-red-50 rounded text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
+                  <button onClick={() => setDeleteConfirm({ type: 'calendarEvent', id: event.id, name: event.title })} className="p-1.5 hover:bg-red-50 rounded text-gray-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
                 </div>
               ))}
             </div>
@@ -319,7 +339,7 @@ export default function AdminDashboard() {
                       <td className="py-3 px-4">
                         <div className="flex gap-1">
                           {!r.approved && <button onClick={() => approveResource(r.id)} className="p-1 bg-green-100 hover:bg-green-200 rounded text-green-700"><Check className="w-3.5 h-3.5" /></button>}
-                          <button onClick={() => deleteResource(r.id)} className="p-1 bg-red-100 hover:bg-red-200 rounded text-red-700"><Trash2 className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => setDeleteConfirm({ type: 'resource', id: r.id, name: r.title })} className="p-1 bg-red-100 hover:bg-red-200 rounded text-red-700"><Trash2 className="w-3.5 h-3.5" /></button>
                         </div>
                       </td>
                     </tr>
@@ -330,6 +350,43 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-[#1a2744]">Confirm Delete</h3>
+                <p className="text-sm text-gray-500">This action cannot be undone</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete <strong>{deleteConfirm.name}</strong>? 
+              {deleteConfirm.type === 'user' && ' This will remove the user and all their associated data.'}
+              {deleteConfirm.type === 'department' && ' This will remove the department and all associated courses.'}
+              {deleteConfirm.type === 'course' && ' This will remove the course and all enrollments.'}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
