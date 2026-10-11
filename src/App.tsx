@@ -36,15 +36,12 @@ function ScrollToTop() {
 
 function AppContent() {
   const location = useLocation();
-  const isDashboard = location.pathname.startsWith('/student') || 
-                      location.pathname.startsWith('/faculty-dashboard') || 
-                      location.pathname.startsWith('/admin');
 
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
       <DataSavedIndicator />
-      {!isDashboard && <Navbar />}
+      <Navbar />
       <main className="flex-1">
         <Routes>
           {/* Public Routes */}
@@ -79,7 +76,7 @@ function AppContent() {
           } />
         </Routes>
       </main>
-      {!isDashboard && <Footer />}
+      <Footer />
     </div>
   );
 }
