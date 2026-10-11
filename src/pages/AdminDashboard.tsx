@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
-import { Users, BookOpen, Building2, Bell, Calendar, FileText, Shield, Plus, Check, X, Trash2, ArrowLeft, Settings, TrendingUp } from 'lucide-react';
+import { Users, BookOpen, Building2, Bell, Calendar, FileText, Shield, Plus, Check, X, Trash2, ArrowLeft, Settings, TrendingUp, Edit } from 'lucide-react';
+import ProfileEdit from '../components/ProfileEdit';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -21,6 +22,7 @@ export default function AdminDashboard() {
   const [calForm, setCalForm] = useState({ title: '', date: '', endDate: '', type: 'event' as const, description: '' });
   const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: string; id: string; name: string } | null>(null);
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
 
   const handleAddDepartment = (e: React.FormEvent) => { e.preventDefault(); addDepartment(deptForm); setDeptForm({ name: '', code: '', description: '' }); setShowForm(''); };
   const handleAddCourse = (e: React.FormEvent) => { e.preventDefault(); addCourse(courseForm); setCourseForm({ code: '', name: '', departmentId: '', batch: 2024, credits: 3, facultyId: '', description: '' }); setShowForm(''); };
@@ -72,6 +74,13 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowProfileEdit(true)}
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-full border border-white/20 transition-all flex items-center gap-2"
+              >
+                <Edit className="w-4 h-4" />
+                Edit Profile
+              </button>
               <span className="px-4 py-2 bg-red-500/20 backdrop-blur-sm text-red-300 text-sm font-medium rounded-full border border-red-400/30">
                 🔒 Administrator
               </span>
@@ -781,6 +790,11 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Profile Edit Modal */}
+      {showProfileEdit && (
+        <ProfileEdit onClose={() => setShowProfileEdit(false)} />
       )}
     </div>
   );

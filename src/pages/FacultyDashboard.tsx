@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
-import { Upload, FileText, Users, BookOpen, Plus, Check, X, ArrowLeft, Briefcase, TrendingUp, Settings } from 'lucide-react';
+import { Upload, FileText, Users, BookOpen, Plus, Check, X, ArrowLeft, Briefcase, TrendingUp, Settings, Edit } from 'lucide-react';
+import ProfileEdit from '../components/ProfileEdit';
 
 export default function FacultyDashboard() {
   const { user } = useAuth();
@@ -20,6 +21,7 @@ export default function FacultyDashboard() {
   const [annForm, setAnnForm] = useState({ title: '', content: '', category: 'general' as const, priority: 'medium' as const });
   const [annSuccess, setAnnSuccess] = useState('');
   const [annError, setAnnError] = useState('');
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
 
   const myDepartment = user?.department || '';
   const departmentCourses = user && myDepartment ? courses.filter(c => {
@@ -155,6 +157,13 @@ export default function FacultyDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowProfileEdit(true)}
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-full border border-white/20 transition-all flex items-center gap-2"
+              >
+                <Edit className="w-4 h-4" />
+                Edit Profile
+              </button>
               <span className="px-4 py-2 bg-blue-500/20 backdrop-blur-sm text-blue-300 text-sm font-medium rounded-full border border-blue-400/30">
                 ✓ Faculty Member
               </span>
@@ -620,10 +629,19 @@ export default function FacultyDashboard() {
         {/* Resources Tab */}
         {activeTab === 'resources' && (
           <div>
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
-              <div className="bg-gradient-to-r from-teal-500 to-teal-600 px-6 py-4">
-                <h3 className="text-xl font-bold text-white">My Resources ({myResources.length})</h3>
+            <div className="flex items-center justify-between mb-6">
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex-1">
+                <div className="bg-gradient-to-r from-teal-500 to-teal-600 px-6 py-4">
+                  <h3 className="text-xl font-bold text-white">My Resources ({myResources.length})</h3>
+                </div>
               </div>
+              <button
+                onClick={() => setActiveTab('upload')}
+                className="ml-4 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+              >
+                <Upload className="w-5 h-5" />
+                Upload New Resource
+              </button>
             </div>
             {myResources.length === 0 ? (
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
@@ -661,6 +679,11 @@ export default function FacultyDashboard() {
           </div>
         )}
       </div>
+
+      {/* Profile Edit Modal */}
+      {showProfileEdit && (
+        <ProfileEdit onClose={() => setShowProfileEdit(false)} />
+      )}
     </div>
   );
 }
