@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { Building2, Search } from 'lucide-react';
 
