@@ -78,6 +78,53 @@ export interface Resource {
   createdAt: string;
 }
 
+export interface CommunityMessage {
+  id: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  createdAt: string;
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  content: string;
+  sentBy: string;
+  createdAt: string;
+  read: boolean;
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+}
+
+export interface Quiz {
+  id: string;
+  title: string;
+  description: string;
+  courseId: string;
+  questions: QuizQuestion[];
+  duration: number; // in minutes
+  createdBy: string;
+  createdAt: string;
+  isActive: boolean;
+}
+
+export interface QuizAttempt {
+  id: string;
+  quizId: string;
+  studentId: string;
+  answers: { questionId: string; selectedOption: number }[];
+  score: number;
+  totalQuestions: number;
+  submittedAt: string;
+  timeTaken: number; // in seconds
+}
+
 interface DataContextType {
   // Users
   users: User[];
@@ -133,6 +180,32 @@ interface DataContextType {
   deleteResource: (id: string) => void;
   getResourcesByCourse: (courseId: string) => Resource[];
   getResourcesByFaculty: (facultyId: string) => Resource[];
+
+  // Community Messages
+  communityMessages: CommunityMessage[];
+  addCommunityMessage: (message: Omit<CommunityMessage, 'id' | 'createdAt'>) => CommunityMessage;
+  deleteCommunityMessage: (id: string) => void;
+
+  // Notifications
+  notifications: Notification[];
+  sendNotification: (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => Notification;
+  markNotificationAsRead: (id: string) => void;
+  getUnreadNotifications: (userId: string) => Notification[];
+
+  // Quizzes
+  quizzes: Quiz[];
+  addQuiz: (quiz: Omit<Quiz, 'id' | 'createdAt'>) => Quiz;
+  deleteQuiz: (id: string) => void;
+  getQuizById: (id: string) => Quiz | undefined;
+  getQuizzesByCourse: (courseId: string) => Quiz[];
+  getQuizzesByFaculty: (facultyId: string) => Quiz[];
+
+  // Quiz Attempts
+  quizAttempts: QuizAttempt[];
+  submitQuizAttempt: (attempt: Omit<QuizAttempt, 'id' | 'submittedAt'>) => QuizAttempt;
+  getStudentAttempts: (studentId: string) => QuizAttempt[];
+  getQuizAttempts: (quizId: string) => QuizAttempt[];
+  hasStudentAttempted: (quizId: string, studentId: string) => boolean;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -147,6 +220,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [announcements, setAnnouncements] = useLocalStorage<Announcement[]>('institute_announcements', []);
   const [calendarEvents, setCalendarEvents] = useLocalStorage<CalendarEvent[]>('institute_calendar', []);
   const [resources, setResources] = useLocalStorage<Resource[]>('institute_resources', []);
+  const [communityMessages, setCommunityMessages] = useLocalStorage<CommunityMessage[]>('institute_community_messages', []);
+  const [notifications, setNotifications] = useLocalStorage<Notification[]>('institute_notifications', []);
+  const [quizzes, setQuizzes] = useLocalStorage<Quiz[]>('institute_quizzes', []);
+  const [quizAttempts, setQuizAttempts] = useLocalStorage<QuizAttempt[]>('institute_quiz_attempts', []);
 
   // Users
   const addUser = (userData: Omit<User, 'id' | 'createdAt' | 'approved'>) => {
@@ -293,6 +370,60 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const getResourcesByCourse = (courseId: string) => resources.filter(r => r.courseId === courseId);
   const getResourcesByFaculty = (facultyId: string) => resources.filter(r => r.uploadedBy === facultyId);
 
+  // Community Messages
+  const addCommunityMessage = (messageData: Omit<CommunityMessage, 'id' | 'createdAt'>) => {
+    const newMessage: CommunityMessage = { ...messageData, id: generateId(), createdAt: new Date().toISOString() };
+    setCommunityMessages(prev => [newMessage, ...prev]);
+    return newMessage;
+  };
+
+  const deleteCommunityMessage = (id: string) => {
+    setCommunityMessages(prev => prev.filter(m => m.id !== id));
+  };
+
+  // Notifications
+  const sendNotification = (notificationData: Omit<Notification, 'id' | 'createdAt' | 'read'>) => {
+    const newNotification: Notification = { ...notificationData, id: generateId(), createdAt: new Date().toISOString(), read: false };
+    setNotifications(prev => [newNotification, ...prev]);
+    return newNotification;
+  };
+
+  const markNotificationAsRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const getUnreadNotifications = (userId: string) => {
+    return notifications.filter(n => !n.read);
+  };
+
+  // Quizzes
+  const addQuiz = (quizData: Omit<Quiz, 'id' | 'createdAt'>) => {
+    const newQuiz: Quiz = { ...quizData, id: generateId(), createdAt: new Date().toISOString() };
+    setQuizzes(prev => [newQuiz, ...prev]);
+    return newQuiz;
+  };
+
+  const deleteQuiz = (id: string) => {
+    setQuizzes(prev => prev.filter(q => q.id !== id));
+    setQuizAttempts(prev => prev.filter(a => a.quizId !== id));
+  };
+
+  const getQuizById = (id: string) => quizzes.find(q => q.id === id);
+  const getQuizzesByCourse = (courseId: string) => quizzes.filter(q => q.courseId === courseId);
+  const getQuizzesByFaculty = (facultyId: string) => quizzes.filter(q => q.createdBy === facultyId);
+
+  // Quiz Attempts
+  const submitQuizAttempt = (attemptData: Omit<QuizAttempt, 'id' | 'submittedAt'>) => {
+    const newAttempt: QuizAttempt = { ...attemptData, id: generateId(), submittedAt: new Date().toISOString() };
+    setQuizAttempts(prev => [newAttempt, ...prev]);
+    return newAttempt;
+  };
+
+  const getStudentAttempts = (studentId: string) => quizAttempts.filter(a => a.studentId === studentId);
+  const getQuizAttempts = (quizId: string) => quizAttempts.filter(a => a.quizId === quizId);
+  const hasStudentAttempted = (quizId: string, studentId: string) => 
+    quizAttempts.some(a => a.quizId === quizId && a.studentId === studentId);
+  
   const value: DataContextType = {
     users, addUser, updateUser, deleteUser, approveUser, getUserById, getStudents, getFaculty, getAdmins,
     departments, addDepartment, updateDepartment, deleteDepartment, getDepartmentById,
@@ -301,8 +432,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
     announcements, addAnnouncement, updateAnnouncement, deleteAnnouncement,
     calendarEvents, addCalendarEvent, updateCalendarEvent, deleteCalendarEvent,
     resources, addResource, approveResource, deleteResource, getResourcesByCourse, getResourcesByFaculty,
+    communityMessages, addCommunityMessage, deleteCommunityMessage,
+    notifications, sendNotification, markNotificationAsRead, getUnreadNotifications,
+    quizzes, addQuiz, deleteQuiz, getQuizById, getQuizzesByCourse, getQuizzesByFaculty,
+    quizAttempts, submitQuizAttempt, getStudentAttempts, getQuizAttempts, hasStudentAttempted,
   };
-
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 

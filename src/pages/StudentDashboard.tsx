@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
-import { BookOpen, FileText, Bell, Calendar, Users, ArrowLeft, GraduationCap, TrendingUp, Clock, CheckCircle } from 'lucide-react';
+import { BookOpen, FileText, Bell, Calendar, Users, ArrowLeft, Stethoscope, TrendingUp, Clock, CheckCircle, Building2 } from 'lucide-react';
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -30,12 +30,12 @@ export default function StudentDashboard() {
               </button>
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-12 h-12 bg-gradient-to-br from-teal-400 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <GraduationCap className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Stethoscope className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-3xl font-bold">Student Dashboard</h1>
-                    <p className="text-teal-200 text-sm">Welcome back, {user?.name}</p>
+                    <h1 className="text-3xl font-bold">Medical Student Dashboard</h1>
+                    <p className="text-emerald-200 text-sm">Welcome back, {user?.name}</p>
                   </div>
                 </div>
               </div>
@@ -201,33 +201,55 @@ export default function StudentDashboard() {
         {activeTab === 'courses' && (
           <div>
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
-                <h3 className="text-xl font-bold text-white">My Enrolled Courses ({myCourses.length})</h3>
+              <div className="bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-4">
+                <h3 className="text-xl font-bold text-white">My Enrolled Programs ({myCourses.length})</h3>
               </div>
             </div>
             {myCourses.length === 0 ? (
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-                <BookOpen className="w-20 h-20 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">Not enrolled in any courses yet</p>
+                <Stethoscope className="w-20 h-20 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg">Not enrolled in any programs yet</p>
+                <p className="text-gray-400 text-sm mt-2">Contact admin for enrollment</p>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-6">
-                {myCourses.map(course => (
-                  <div key={course.id} className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-blue-300 transition-all duration-300 transform hover:-translate-y-1">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <BookOpen className="w-7 h-7 text-white" />
+                {myCourses.map(course => {
+                  const department = useData().departments.find(d => d.id === course.departmentId);
+                  const faculty = course.facultyId ? useData().users.find(u => u.id === course.facultyId) : null;
+                  
+                  return (
+                    <div key={course.id} className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-emerald-300 transition-all duration-300 transform hover:-translate-y-1">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                          <Stethoscope className="w-7 h-7 text-white" />
+                        </div>
+                        <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">{course.code}</span>
                       </div>
-                      <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">{course.code}</span>
+                      <h3 className="text-xl font-bold text-[#1a2744] mb-2 group-hover:text-emerald-600 transition-colors">{course.name}</h3>
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">{course.description}</p>
+                      
+                      <div className="space-y-2 mb-4">
+                        {department && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Building2 className="w-4 h-4 text-gray-400" />
+                            <span className="text-gray-600">{department.name}</span>
+                          </div>
+                        )}
+                        {faculty && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Users className="w-4 h-4 text-gray-400" />
+                            <span className="text-gray-600">{faculty.name}</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <span className="text-sm text-gray-500">Batch {course.batch}</span>
+                        <span className="text-sm font-semibold text-emerald-600">{course.credits} Credits</span>
+                      </div>
                     </div>
-                    <h3 className="text-xl font-bold text-[#1a2744] mb-2 group-hover:text-blue-600 transition-colors">{course.name}</h3>
-                    <p className="text-sm text-gray-600 mb-4">{course.description}</p>
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <span className="text-sm text-gray-500">Batch {course.batch}</span>
-                      <span className="text-sm font-semibold text-blue-600">{course.credits} Credits</span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Menu, X, GraduationCap, LogOut, User, ChevronDown } from 'lucide-react';
+import { Menu, X, Stethoscope, LogOut, User, ChevronDown } from 'lucide-react';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -13,10 +13,12 @@ export default function Navbar() {
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/departments', label: 'Departments' },
-    { path: '/courses', label: 'Courses' },
-    { path: '/faculty', label: 'Faculty' },
+    { path: '/courses', label: 'Medical Courses' },
+    { path: '/faculty', label: 'Medical Faculty' },
     { path: '/announcements', label: 'Announcements' },
-    { path: '/calendar', label: 'Calendar' },
+    { path: '/calendar', label: 'Academic Calendar' },
+    { path: '/quizzes', label: 'Quizzes' },
+    { path: '/community', label: 'Community' },
     { path: '/contact', label: 'Contact' },
   ];
 
@@ -32,12 +34,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Stethoscope className="w-6 h-6 text-white" />
             </div>
             <div className="hidden sm:block">
-              <div className="font-bold text-sm leading-tight">ABC Institute</div>
-              <div className="text-[10px] text-teal-300 leading-tight">of Education</div>
+              <div className="font-bold text-sm leading-tight">Sultanat e Italia</div>
+              <div className="text-[10px] text-emerald-300 leading-tight">Medica</div>
             </div>
           </Link>
 

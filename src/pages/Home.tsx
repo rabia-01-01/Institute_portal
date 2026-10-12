@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { BookOpen, Users, Award, Building2, ArrowRight, Calendar, Bell, GraduationCap } from 'lucide-react';
+import { BookOpen, Users, Award, Building2, ArrowRight, Calendar, Bell, Stethoscope, Heart, Activity } from 'lucide-react';
 
 export default function Home() {
   const { departments, announcements, users, courses } = useData();
   
   const stats = [
-    { icon: Users, value: users.filter(u => u.role === 'student' && u.approved).length.toString(), label: 'Students' },
-    { icon: BookOpen, value: courses.length.toString(), label: 'Courses' },
-    { icon: Award, value: users.filter(u => u.role === 'faculty' && u.approved).length.toString(), label: 'Faculty' },
-    { icon: Building2, value: departments.length.toString(), label: 'Departments' },
+    { icon: Users, value: users.filter(u => u.role === 'student' && u.approved).length.toString(), label: 'Medical Students' },
+    { icon: BookOpen, value: courses.length.toString(), label: 'Exam Programs' },
+    { icon: Award, value: users.filter(u => u.role === 'faculty' && u.approved).length.toString(), label: 'Medical Faculty' },
+    { icon: Building2, value: departments.length.toString(), label: 'Medical Subjects' },
   ];
 
   return (
@@ -23,19 +23,19 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm mb-6">
-              <span className="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></span>
-              <span>Welcome to ABC Institute</span>
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+              <span>Welcome to Sultanat e Italia Medica</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-              ABC Institute <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-300">of Education</span>
+              Sultanat e Italia <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Medica</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed">
-              A comprehensive academic resource management portal for students, faculty, and administrators.
-              Register to access courses, resources, and announcements.
+              Premier institute for NEET, IMAT & medical entrance exam preparation. 
+              Expert faculty, comprehensive study materials, and proven success in shaping future doctors.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link to="/register" className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                <GraduationCap className="w-5 h-5 group-hover:rotate-12 transition-transform" /> Register Now
+              <Link to="/register" className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <Stethoscope className="w-5 h-5 group-hover:rotate-12 transition-transform" /> Register Now
               </Link>
               <Link to="/login" className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/30 hover:bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl transition-all">
                 Sign In
@@ -64,20 +64,20 @@ export default function Home() {
       <section className="bg-gradient-to-br from-gray-50 to-white py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-50 rounded-full text-teal-700 text-sm font-medium mb-4">
-              <Building2 className="w-4 h-4" />
-              Academic Excellence
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-full text-emerald-700 text-sm font-medium mb-4">
+              <Heart className="w-4 h-4" />
+              Medical Excellence
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1a2744] mb-3">Our Departments</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Browse our academic departments and programs</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1a2744] mb-3">Departments</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Comprehensive preparation for NEET, IMAT, and medical entrance examinations</p>
           </div>
           {departments.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-2xl border border-gray-200 shadow-sm">
               <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Building2 className="w-10 h-10 text-gray-400" />
+                <Stethoscope className="w-10 h-10 text-gray-400" />
               </div>
-              <p className="text-gray-500 text-lg">No departments added yet</p>
-              <p className="text-gray-400 text-sm mt-2">Admin can add departments from the dashboard</p>
+              <p className="text-gray-500 text-lg">No medical subjects added yet</p>
+              <p className="text-gray-400 text-sm mt-2">Admin can add subjects from the dashboard</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -85,19 +85,19 @@ export default function Home() {
                 <Link 
                   key={dept.id} 
                   to={`/departments/${dept.id}`}
-                  className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-teal-300 transform hover:-translate-y-1"
+                  className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-emerald-300 transform hover:-translate-y-1"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-                      <Building2 className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                      <Stethoscope className="w-6 h-6 text-white" />
                     </div>
-                    <span className="px-3 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-full">{dept.code}</span>
+                    <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">{dept.code}</span>
                   </div>
-                  <h3 className="font-bold text-lg text-[#1a2744] group-hover:text-teal-600 transition-colors mb-2">{dept.name}</h3>
+                  <h3 className="font-bold text-lg text-[#1a2744] group-hover:text-emerald-600 transition-colors mb-2">{dept.name}</h3>
                   <p className="text-sm text-gray-500 line-clamp-2 mb-4">{dept.description}</p>
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <span className="text-teal-600 font-medium text-sm group-hover:text-teal-700 transition-colors">View Details</span>
-                    <ArrowRight className="w-4 h-4 text-teal-600 group-hover:translate-x-1 transition-transform" />
+                    <span className="text-emerald-600 font-medium text-sm group-hover:text-emerald-700 transition-colors">View Details</span>
+                    <ArrowRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
               ))}
@@ -105,8 +105,8 @@ export default function Home() {
           )}
           {departments.length > 6 && (
             <div className="text-center mt-8">
-              <Link to="/departments" className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-teal-500 text-teal-600 hover:bg-teal-50 font-semibold rounded-xl transition-all">
-                View All Departments <ArrowRight className="w-4 h-4" />
+              <Link to="/departments" className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-semibold rounded-xl transition-all">
+                View All Subjects <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           )}
@@ -155,19 +155,19 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-white text-center mb-10">Quick Access</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Link to="/calendar" className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-colors">
-              <Calendar className="w-10 h-10 text-teal-400 mx-auto mb-3" />
+              <Calendar className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
               <h3 className="text-white font-semibold mb-1">Academic Calendar</h3>
-              <p className="text-gray-300 text-sm">View important dates</p>
+              <p className="text-gray-300 text-sm">NEET, IMAT & exam dates</p>
             </Link>
             <Link to="/courses" className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-colors">
-              <BookOpen className="w-10 h-10 text-teal-400 mx-auto mb-3" />
-              <h3 className="text-white font-semibold mb-1">Courses</h3>
-              <p className="text-gray-300 text-sm">Browse available courses</p>
+              <BookOpen className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+              <h3 className="text-white font-semibold mb-1">Medical Courses</h3>
+              <p className="text-gray-300 text-sm">NEET, IMAT preparation</p>
             </Link>
             <Link to="/faculty" className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-colors">
-              <Users className="w-10 h-10 text-teal-400 mx-auto mb-3" />
-              <h3 className="text-white font-semibold mb-1">Faculty</h3>
-              <p className="text-gray-300 text-sm">Meet our faculty</p>
+              <Users className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+              <h3 className="text-white font-semibold mb-1">Medical Faculty</h3>
+              <p className="text-gray-300 text-sm">Expert doctors & professors</p>
             </Link>
           </div>
         </div>

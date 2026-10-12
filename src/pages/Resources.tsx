@@ -1,71 +1,288 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
-import { FileText, Search } from 'lucide-react';
+import { FileText, Video, BookOpen, ClipboardList, GraduationCap, Search, Eye, Download, X } from 'lucide-react';
 
 export default function Resources() {
   const { resources, courses } = useData();
   const [search, setSearch] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
+  const [selectedResource, setSelectedResource] = useState<any>(null);
   const approved = resources.filter(r => r.approved);
-  const filtered = approved.filter(r => {
-    const matchSearch = r.title.toLowerCase().includes(search.toLowerCase());
-    const matchType = !typeFilter || r.type === typeFilter;
-    return matchSearch && matchType;
-  });
+
+  const filtered = approved.filter(r => 
+    r.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // Categorize resources
+  const pdfs = filtered.filter(r => r.type === 'pdf');
+  const notes = filtered.filter(r => r.type === 'notes');
+  const syllabus = filtered.filter(r => r.type === 'syllabus');
+  const videos = filtered.filter(r => r.type === 'video');
+  const pyqs = filtered.filter(r => r.type === 'question_paper');
+  const assignments = filtered.filter(r => r.type === 'assignment');
+
+  const ResourceCard = ({ resource }: { resource: any }) => {
+    const course = courses.find(c => c.id === resource.courseId);
+    return (
+      <div className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all">
+        <div className="flex items-start gap-3 mb-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
+            <FileText className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-semibold text-sm text-[#1a2744] line-clamp-2">{resource.title}</h4>
+            <p className="text-xs text-gray-400 mt-0.5">{course?.code}</p>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 line-clamp-2 mb-3">{resource.description}</p>
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs text-gray-400">
+          <span>{resource.fileSize}</span>
+          <span className="capitalize">{resource.type.replace('_', ' ')}</span>
+        </div>
+        <button
+          onClick={() => setSelectedResource(resource)}
+          className="w-full mt-3 px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white text-sm font-semibold rounded-lg hover:shadow-md transition-all flex items-center justify-center gap-2"
+        >
+          <Eye className="w-4 h-4" />
+          View Document
+        </button>
+      </div>
+    );
+  };
+
+  const VideoCard = ({ resource }: { resource: any }) => {
+    const course = courses.find(c => c.id === resource.courseId);
+    return (
+      <div className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all">
+        <div className="flex items-start gap-3 mb-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <Video className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-semibold text-sm text-[#1a2744] line-clamp-2">{resource.title}</h4>
+            <p className="text-xs text-gray-400 mt-0.5">{course?.code}</p>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 line-clamp-2 mb-3">{resource.description}</p>
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs text-gray-400">
+          <span>{resource.fileSize}</span>
+          <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs font-medium">Video</span>
+        </div>
+        <button
+          onClick={() => setSelectedResource(resource)}
+          className="w-full mt-3 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-md transition-all flex items-center justify-center gap-2"
+        >
+          <Eye className="w-4 h-4" />
+          View Video
+        </button>
+      </div>
+    );
+  };
+
+  const Section = ({ title, icon: Icon, color, items }: any) => (
+    <div className="mb-12">
+      <div className="flex items-center gap-3 mb-6">
+        <div className={`w-12 h-12 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center shadow-lg`}>
+          <Icon className="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-[#1a2744]">{title}</h2>
+          <p className="text-sm text-gray-500">{items.length} {items.length === 1 ? 'resource' : 'resources'}</p>
+        </div>
+      </div>
+      {items.length === 0 ? (
+        <div className="bg-gray-50 rounded-xl p-8 text-center">
+          <Icon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-500">No {title.toLowerCase()} available yet</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {items.map((resource: any) => 
+            resource.type === 'video' ? (
+              <VideoCard key={resource.id} resource={resource} />
+            ) : (
+              <ResourceCard key={resource.id} resource={resource} />
+            )
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="bg-white min-h-screen">
       <section className="bg-gradient-to-r from-[#1a2744] to-[#0d4a4a] text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-4xl font-bold mb-4">Resource Library</h1>
-          <p className="text-gray-300">Browse academic resources</p>
+          <p className="text-gray-300">Browse academic resources by category</p>
         </div>
       </section>
+      
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-wrap gap-3 mb-8">
-            <input type="text" placeholder="Search resources..." value={search} onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" />
-            <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white">
-              <option value="">All Types</option>
-              <option value="pdf">PDF</option>
-              <option value="video">Video</option>
-              <option value="notes">Notes</option>
-              <option value="assignment">Assignment</option>
-              <option value="question_paper">Question Paper</option>
-            </select>
+          <div className="mb-8">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="Search resources..." 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none" 
+              />
+            </div>
           </div>
+
           {filtered.length === 0 ? (
             <div className="text-center py-12">
-              <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">{approved.length === 0 ? 'No resources available yet.' : 'No resources found.'}</p>
+              <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500 text-lg">
+                {approved.length === 0 ? 'No resources available yet.' : 'No resources found matching your search.'}
+              </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map(resource => {
-                const course = courses.find(c => c.id === resource.courseId);
-                return (
-                  <div key={resource.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all">
-                    <div className="flex items-start gap-3 mb-3">
-                      <FileText className="w-8 h-8 text-teal-600 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm text-[#1a2744] line-clamp-2">{resource.title}</h4>
-                        <p className="text-xs text-gray-400 mt-0.5">{course?.code}</p>
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-500 line-clamp-2 mb-3">{resource.description}</p>
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 text-xs text-gray-400">
-                      <span>{resource.fileSize}</span>
-                      <span className="capitalize">{resource.type.replace('_', ' ')}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <>
+              <Section 
+                title="External PDFs" 
+                icon={FileText} 
+                color="from-red-500 to-red-600"
+                items={pdfs} 
+              />
+              
+              <Section 
+                title="Class Notes" 
+                icon={BookOpen} 
+                color="from-blue-500 to-blue-600"
+                items={notes} 
+              />
+              
+              <Section 
+                title="Syllabus" 
+                icon={ClipboardList} 
+                color="from-amber-500 to-amber-600"
+                items={syllabus} 
+              />
+              
+              <Section 
+                title="Video Lectures" 
+                icon={Video} 
+                color="from-purple-500 to-purple-600"
+                items={videos} 
+              />
+              
+              <Section 
+                title="Previous Year Questions (PYQs)" 
+                icon={GraduationCap} 
+                color="from-emerald-500 to-emerald-600"
+                items={pyqs} 
+              />
+              
+              <Section 
+                title="Assignments & Question Papers" 
+                icon={ClipboardList} 
+                color="from-indigo-500 to-indigo-600"
+                items={assignments} 
+              />
+            </>
           )}
         </div>
       </section>
+
+      {/* Document View Modal */}
+      {selectedResource && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-[#1a2744] to-[#0d4a4a] text-white px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">{selectedResource.title}</h2>
+              <button
+                onClick={() => setSelectedResource(null)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              {/* Document Info */}
+              <div className="bg-gray-50 rounded-xl p-6 mb-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Course</p>
+                    <p className="font-semibold text-[#1a2744]">
+                      {courses.find(c => c.id === selectedResource.courseId)?.name || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Type</p>
+                    <p className="font-semibold text-[#1a2744] capitalize">
+                      {selectedResource.type.replace('_', ' ')}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">File Size</p>
+                    <p className="font-semibold text-[#1a2744]">{selectedResource.fileSize}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Uploaded</p>
+                    <p className="font-semibold text-[#1a2744]">
+                      {new Date(selectedResource.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-[#1a2744] mb-3">Description</h3>
+                <p className="text-gray-600 leading-relaxed">{selectedResource.description}</p>
+              </div>
+
+              {/* Document Preview Area */}
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-[#1a2744] mb-3">Document Preview</h3>
+                {selectedResource.type === 'video' ? (
+                  <div className="bg-gray-900 rounded-xl aspect-video flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <Video className="w-16 h-16 mx-auto mb-3 opacity-50" />
+                      <p className="text-sm opacity-70">Video Player</p>
+                      <p className="text-xs opacity-50 mt-1">Video content would be displayed here</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-100 rounded-xl p-12 text-center border-2 border-dashed border-gray-300">
+                    <FileText className="w-16 h-16 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-600 font-medium mb-1">Document Preview</p>
+                    <p className="text-sm text-gray-500">
+                      {selectedResource.fileName}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      In production, PDF.js would render the document here
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4">
+                <button
+                  onClick={() => {
+                    alert('Download functionality would be implemented with actual file storage');
+                  }}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                  <Download className="w-5 h-5" />
+                  Download Document
+                </button>
+                <button
+                  onClick={() => setSelectedResource(null)}
+                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default function Contact() {
                 <div className="space-y-4">
                   <div className="flex items-start gap-3"><MapPin className="w-4 h-4 text-teal-600 mt-0.5" /><div><p className="text-sm font-medium text-gray-700">Address</p><p className="text-sm text-gray-500">123 Academic Avenue, Education City</p></div></div>
                   <div className="flex items-start gap-3"><Phone className="w-4 h-4 text-teal-600 mt-0.5" /><div><p className="text-sm font-medium text-gray-700">Phone</p><p className="text-sm text-gray-500">+1 (555) 123-4567</p></div></div>
-                  <div className="flex items-start gap-3"><Mail className="w-4 h-4 text-teal-600 mt-0.5" /><div><p className="text-sm font-medium text-gray-700">Email</p><p className="text-sm text-gray-500">info@abc-institute.edu</p></div></div>
+                  <div className="flex items-start gap-3"><Mail className="w-4 h-4 text-teal-600 mt-0.5" /><div><p className="text-sm font-medium text-gray-700">Email</p><p className="text-sm text-gray-500">info@medico.sultanatitalia.edu</p></div></div>
                 </div>
               </div>
             </div>
