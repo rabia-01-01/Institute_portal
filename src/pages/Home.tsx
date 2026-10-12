@@ -156,12 +156,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Link to="/calendar" className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-colors">
               <Calendar className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
-              <h3 className="text-white font-semibold mb-1">Exam Calendar</h3>
+              <h3 className="text-white font-semibold mb-1">Academic Calendar</h3>
               <p className="text-gray-300 text-sm">NEET, IMAT & exam dates</p>
             </Link>
             <Link to="/courses" className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-colors">
               <BookOpen className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
-              <h3 className="text-white font-semibold mb-1">Exam Programs</h3>
+              <h3 className="text-white font-semibold mb-1">Exam Programmes</h3>
               <p className="text-gray-300 text-sm">NEET, IMAT preparation</p>
             </Link>
             <Link to="/faculty" className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-colors">

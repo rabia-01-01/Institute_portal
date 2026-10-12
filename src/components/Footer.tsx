@@ -27,10 +27,10 @@ export default function Footer() {
               {[
                 { path: '/about', label: 'About Us' },
                 { path: '/departments', label: 'Medical Subjects' },
-                { path: '/courses', label: 'Exam Programs' },
+                { path: '/courses', label: 'Exam Programmes' },
                 { path: '/faculty', label: 'Medical Faculty' },
                 { path: '/announcements', label: 'Announcements' },
-                { path: '/calendar', label: 'Exam Calendar' },
+                { path: '/calendar', label: 'Academic Calendar' },
               ].map(link => (
                 <li key={link.path}>
                   <Link to={link.path} className="text-sm text-gray-400 hover:text-emerald-400 transition-colors">
@@ -64,7 +64,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="text-sm text-gray-400">admissions@sultanatitalia-medica.edu</span>
+                <span className="text-sm text-gray-400">info@medico.sultanatitalia.edu</span>
               </li>
             </ul>
           </div>

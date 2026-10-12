@@ -13,10 +13,10 @@ export default function Navbar() {
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/departments', label: 'Medical Subjects' },
-    { path: '/courses', label: 'Exam Programs' },
+    { path: '/courses', label: 'Exam Programmes' },
     { path: '/faculty', label: 'Medical Faculty' },
     { path: '/announcements', label: 'Announcements' },
-    { path: '/calendar', label: 'Exam Calendar' },
+    { path: '/calendar', label: 'Academic Calendar' },
     { path: '/contact', label: 'Contact' },
   ];
 
