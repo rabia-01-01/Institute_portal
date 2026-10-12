@@ -78,6 +78,23 @@ export interface Resource {
   createdAt: string;
 }
 
+export interface CommunityMessage {
+  id: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  createdAt: string;
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  content: string;
+  sentBy: string;
+  createdAt: string;
+  read: boolean;
+}
+
 interface DataContextType {
   // Users
   users: User[];
@@ -133,6 +150,17 @@ interface DataContextType {
   deleteResource: (id: string) => void;
   getResourcesByCourse: (courseId: string) => Resource[];
   getResourcesByFaculty: (facultyId: string) => Resource[];
+
+  // Community Messages
+  communityMessages: CommunityMessage[];
+  addCommunityMessage: (message: Omit<CommunityMessage, 'id' | 'createdAt'>) => CommunityMessage;
+  deleteCommunityMessage: (id: string) => void;
+
+  // Notifications
+  notifications: Notification[];
+  sendNotification: (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => Notification;
+  markNotificationAsRead: (id: string) => void;
+  getUnreadNotifications: (userId: string) => Notification[];
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -147,6 +175,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [announcements, setAnnouncements] = useLocalStorage<Announcement[]>('institute_announcements', []);
   const [calendarEvents, setCalendarEvents] = useLocalStorage<CalendarEvent[]>('institute_calendar', []);
   const [resources, setResources] = useLocalStorage<Resource[]>('institute_resources', []);
+  const [communityMessages, setCommunityMessages] = useLocalStorage<CommunityMessage[]>('institute_community_messages', []);
+  const [notifications, setNotifications] = useLocalStorage<Notification[]>('institute_notifications', []);
 
   // Users
   const addUser = (userData: Omit<User, 'id' | 'createdAt' | 'approved'>) => {
@@ -293,6 +323,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const getResourcesByCourse = (courseId: string) => resources.filter(r => r.courseId === courseId);
   const getResourcesByFaculty = (facultyId: string) => resources.filter(r => r.uploadedBy === facultyId);
 
+  // Community Messages
+  const addCommunityMessage = (messageData: Omit<CommunityMessage, 'id' | 'createdAt'>) => {
+    const newMessage: CommunityMessage = { ...messageData, id: generateId(), createdAt: new Date().toISOString() };
+    setCommunityMessages(prev => [newMessage, ...prev]);
+    return newMessage;
+  };
+
+  const deleteCommunityMessage = (id: string) => {
+    setCommunityMessages(prev => prev.filter(m => m.id !== id));
+  };
+
+  // Notifications
+  const sendNotification = (notificationData: Omit<Notification, 'id' | 'createdAt' | 'read'>) => {
+    const newNotification: Notification = { ...notificationData, id: generateId(), createdAt: new Date().toISOString(), read: false };
+    setNotifications(prev => [newNotification, ...prev]);
+    return newNotification;
+  };
+
+  const markNotificationAsRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const getUnreadNotifications = (userId: string) => {
+    return notifications.filter(n => !n.read);
+  };
+  
   const value: DataContextType = {
     users, addUser, updateUser, deleteUser, approveUser, getUserById, getStudents, getFaculty, getAdmins,
     departments, addDepartment, updateDepartment, deleteDepartment, getDepartmentById,
@@ -301,8 +357,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
     announcements, addAnnouncement, updateAnnouncement, deleteAnnouncement,
     calendarEvents, addCalendarEvent, updateCalendarEvent, deleteCalendarEvent,
     resources, addResource, approveResource, deleteResource, getResourcesByCourse, getResourcesByFaculty,
+    communityMessages, addCommunityMessage, deleteCommunityMessage,
+    notifications, sendNotification, markNotificationAsRead, getUnreadNotifications,
   };
-
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 

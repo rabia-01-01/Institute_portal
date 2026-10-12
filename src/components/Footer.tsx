@@ -26,11 +26,12 @@ export default function Footer() {
             <ul className="space-y-2">
               {[
                 { path: '/about', label: 'About Us' },
-                { path: '/departments', label: 'Medical Subjects' },
-                { path: '/courses', label: 'Exam Programmes' },
+                { path: '/departments', label: 'Exam Programmes' },
+                { path: '/courses', label: 'Medical Courses' },
                 { path: '/faculty', label: 'Medical Faculty' },
                 { path: '/announcements', label: 'Announcements' },
                 { path: '/calendar', label: 'Academic Calendar' },
+                { path: '/community', label: 'Community' },
               ].map(link => (
                 <li key={link.path}>
                   <Link to={link.path} className="text-sm text-gray-400 hover:text-emerald-400 transition-colors">

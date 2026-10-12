@@ -12,11 +12,12 @@ export default function Navbar() {
   const publicLinks = [
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
-    { path: '/departments', label: 'Medical Subjects' },
-    { path: '/courses', label: 'Exam Programmes' },
+    { path: '/departments', label: 'Exam Programmes' },
+    { path: '/courses', label: 'Medical Courses' },
     { path: '/faculty', label: 'Medical Faculty' },
     { path: '/announcements', label: 'Announcements' },
     { path: '/calendar', label: 'Academic Calendar' },
+    { path: '/community', label: 'Community' },
     { path: '/contact', label: 'Contact' },
   ];
 

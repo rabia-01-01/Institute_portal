@@ -20,6 +20,7 @@ import Announcements from './pages/Announcements';
 import CalendarPage from './pages/CalendarPage';
 import Resources from './pages/Resources';
 import Contact from './pages/Contact';
+import Community from './pages/Community';
 
 // Dashboards
 import StudentDashboard from './pages/StudentDashboard';
@@ -57,6 +58,7 @@ function AppContent() {
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/community" element={<Community />} />
 
           {/* Protected Routes */}
           <Route path="/student/*" element={

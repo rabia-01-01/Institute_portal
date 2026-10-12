@@ -68,7 +68,7 @@ export default function Home() {
               <Heart className="w-4 h-4" />
               Medical Excellence
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1a2744] mb-3">Medical Subjects</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1a2744] mb-3">Exam Programmes</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">Comprehensive preparation for NEET, IMAT, and medical entrance examinations</p>
           </div>
           {departments.length === 0 ? (
@@ -161,7 +161,7 @@ export default function Home() {
             </Link>
             <Link to="/courses" className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-colors">
               <BookOpen className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
-              <h3 className="text-white font-semibold mb-1">Exam Programmes</h3>
+              <h3 className="text-white font-semibold mb-1">Medical Courses</h3>
               <p className="text-gray-300 text-sm">NEET, IMAT preparation</p>
             </Link>
             <Link to="/faculty" className="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-6 text-center hover:bg-white/20 transition-colors">
