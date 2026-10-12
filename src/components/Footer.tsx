@@ -26,7 +26,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {[
                 { path: '/about', label: 'About Us' },
-                { path: '/departments', label: 'Exam Programmes' },
+                { path: '/departments', label: 'Departments' },
                 { path: '/courses', label: 'Medical Courses' },
                 { path: '/faculty', label: 'Medical Faculty' },
                 { path: '/announcements', label: 'Announcements' },

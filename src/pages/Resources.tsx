@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
-import { FileText, Video, BookOpen, ClipboardList, GraduationCap, Search } from 'lucide-react';
+import { FileText, Video, BookOpen, ClipboardList, GraduationCap, Search, Eye, Download, X } from 'lucide-react';
 
 export default function Resources() {
   const { resources, courses } = useData();
   const [search, setSearch] = useState('');
+  const [selectedResource, setSelectedResource] = useState<any>(null);
   const approved = resources.filter(r => r.approved);
 
   const filtered = approved.filter(r => 
@@ -37,6 +38,13 @@ export default function Resources() {
           <span>{resource.fileSize}</span>
           <span className="capitalize">{resource.type.replace('_', ' ')}</span>
         </div>
+        <button
+          onClick={() => setSelectedResource(resource)}
+          className="w-full mt-3 px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white text-sm font-semibold rounded-lg hover:shadow-md transition-all flex items-center justify-center gap-2"
+        >
+          <Eye className="w-4 h-4" />
+          View Document
+        </button>
       </div>
     );
   };
@@ -59,6 +67,13 @@ export default function Resources() {
           <span>{resource.fileSize}</span>
           <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs font-medium">Video</span>
         </div>
+        <button
+          onClick={() => setSelectedResource(resource)}
+          className="w-full mt-3 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm font-semibold rounded-lg hover:shadow-md transition-all flex items-center justify-center gap-2"
+        >
+          <Eye className="w-4 h-4" />
+          View Video
+        </button>
       </div>
     );
   };
@@ -171,6 +186,103 @@ export default function Resources() {
           )}
         </div>
       </section>
+
+      {/* Document View Modal */}
+      {selectedResource && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-[#1a2744] to-[#0d4a4a] text-white px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">{selectedResource.title}</h2>
+              <button
+                onClick={() => setSelectedResource(null)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              {/* Document Info */}
+              <div className="bg-gray-50 rounded-xl p-6 mb-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Course</p>
+                    <p className="font-semibold text-[#1a2744]">
+                      {courses.find(c => c.id === selectedResource.courseId)?.name || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Type</p>
+                    <p className="font-semibold text-[#1a2744] capitalize">
+                      {selectedResource.type.replace('_', ' ')}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">File Size</p>
+                    <p className="font-semibold text-[#1a2744]">{selectedResource.fileSize}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Uploaded</p>
+                    <p className="font-semibold text-[#1a2744]">
+                      {new Date(selectedResource.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-[#1a2744] mb-3">Description</h3>
+                <p className="text-gray-600 leading-relaxed">{selectedResource.description}</p>
+              </div>
+
+              {/* Document Preview Area */}
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-[#1a2744] mb-3">Document Preview</h3>
+                {selectedResource.type === 'video' ? (
+                  <div className="bg-gray-900 rounded-xl aspect-video flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <Video className="w-16 h-16 mx-auto mb-3 opacity-50" />
+                      <p className="text-sm opacity-70">Video Player</p>
+                      <p className="text-xs opacity-50 mt-1">Video content would be displayed here</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-100 rounded-xl p-12 text-center border-2 border-dashed border-gray-300">
+                    <FileText className="w-16 h-16 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-600 font-medium mb-1">Document Preview</p>
+                    <p className="text-sm text-gray-500">
+                      {selectedResource.fileName}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      In production, PDF.js would render the document here
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4">
+                <button
+                  onClick={() => {
+                    alert('Download functionality would be implemented with actual file storage');
+                  }}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                  <Download className="w-5 h-5" />
+                  Download Document
+                </button>
+                <button
+                  onClick={() => setSelectedResource(null)}
+                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

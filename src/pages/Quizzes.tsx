@@ -20,7 +20,7 @@ export default function Quizzes() {
     ]
   });
 
-  const isFaculty = user?.role === 'faculty' || user?.role === 'admin';
+  const isFaculty = user?.role === 'faculty';
   const isStudent = user?.role === 'student';
 
   // Get quizzes based on user role

@@ -68,7 +68,7 @@ export default function Home() {
               <Heart className="w-4 h-4" />
               Medical Excellence
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1a2744] mb-3">Exam Programmes</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1a2744] mb-3">Departments</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">Comprehensive preparation for NEET, IMAT, and medical entrance examinations</p>
           </div>
           {departments.length === 0 ? (

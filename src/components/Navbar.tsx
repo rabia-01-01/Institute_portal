@@ -12,7 +12,7 @@ export default function Navbar() {
   const publicLinks = [
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
-    { path: '/departments', label: 'Exam Programmes' },
+    { path: '/departments', label: 'Departments' },
     { path: '/courses', label: 'Medical Courses' },
     { path: '/faculty', label: 'Medical Faculty' },
     { path: '/announcements', label: 'Announcements' },
