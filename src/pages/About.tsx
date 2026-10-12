@@ -1,6 +1,6 @@
 import { useData } from '../context/DataContext';
 import { Link } from 'react-router-dom';
-import { Award, Target, BookOpen, Users, Building2, GraduationCap, Trophy, Globe, Lightbulb, Heart, Shield, ArrowRight } from 'lucide-react';
+import { Award, Target, BookOpen, Users, Building2, Stethoscope, Trophy, Globe, Lightbulb, Heart, Shield, ArrowRight } from 'lucide-react';
 
 export default function About() {
   const { departments, users, courses } = useData();
@@ -16,15 +16,15 @@ export default function About() {
         </div>
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-500/20 border border-teal-500/30 rounded-full text-teal-300 text-sm mb-6">
-              <GraduationCap className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-emerald-300 text-sm mb-6">
+              <Stethoscope className="w-4 h-4" />
               Established 1985
             </div>
             <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-              About <span className="text-teal-400">ABC Institute</span> of Education
+              About <span className="text-emerald-400">Sultanat e Italia</span> Medica
             </h1>
             <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
-              A premier institution dedicated to academic excellence, innovation, and holistic development.
+              Premier institute for NEET, IMAT & medical entrance exam preparation.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/departments" className="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg transition-colors">
@@ -50,17 +50,17 @@ export default function About() {
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-50 rounded-xl mb-3">
-                <GraduationCap className="w-7 h-7 text-blue-600" />
+                <Stethoscope className="w-7 h-7 text-blue-600" />
               </div>
               <div className="text-3xl font-bold text-[#1a2744]">{facultyCount}+</div>
-              <div className="text-sm text-gray-500 mt-1">Expert Faculty</div>
+              <div className="text-sm text-gray-500 mt-1">Medical Faculty</div>
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-14 h-14 bg-purple-50 rounded-xl mb-3">
                 <BookOpen className="w-7 h-7 text-purple-600" />
               </div>
               <div className="text-3xl font-bold text-[#1a2744]">{courses.length}+</div>
-              <div className="text-sm text-gray-500 mt-1">Courses</div>
+              <div className="text-sm text-gray-500 mt-1">Exam Programs</div>
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-50 rounded-xl mb-3">
