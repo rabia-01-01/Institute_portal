@@ -14,6 +14,22 @@ export default function Community() {
 
   const isAdmin = user?.role === 'admin';
 
+  // Check if user is logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
+          <Users className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-[#1a2744] mb-2">Join the Community</h2>
+          <p className="text-gray-600 mb-6">Please login to access the community features and connect with fellow medical aspirants.</p>
+          <a href="#/login" className="inline-block px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all">
+            Login to Continue
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   const handlePostMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || !user) return;

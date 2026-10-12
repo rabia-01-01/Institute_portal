@@ -8,7 +8,7 @@ import ProfileEdit from '../components/ProfileEdit';
 export default function FacultyDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { getCoursesByFaculty, getResourcesByFaculty, addResource, addCourse, addAnnouncement, courses, departments } = useData();
+  const { getCoursesByFaculty, getResourcesByFaculty, addResource, addCourse, addAnnouncement, courses, departments, getStudentsInCourse } = useData();
   const [activeTab, setActiveTab] = useState<'overview' | 'upload' | 'students' | 'resources' | 'add-course' | 'add-announcement'>('overview');
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -606,23 +606,63 @@ export default function FacultyDashboard() {
           <div>
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
               <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
-                <h3 className="text-xl font-bold text-white">My Courses</h3>
+                <h3 className="text-xl font-bold text-white">Students in My Courses</h3>
               </div>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
-              {myCourses.map(course => (
-                <div key={course.id} className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-green-300 transition-all duration-300 transform hover:-translate-y-1">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <BookOpen className="w-7 h-7 text-white" />
+            {myCourses.length === 0 ? (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
+                <Users className="w-20 h-20 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg">No courses assigned yet</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {myCourses.map(course => {
+                  const enrolledStudents = getStudentsInCourse(course.id);
+                  return (
+                    <div key={course.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 px-6 py-4 border-b border-gray-200">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-lg font-bold text-[#1a2744]">{course.name}</h3>
+                            <p className="text-sm text-gray-600">{course.code} • Batch {course.batch}</p>
+                          </div>
+                          <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-semibold rounded-full">
+                            {enrolledStudents.length} Students
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        {enrolledStudents.length === 0 ? (
+                          <div className="text-center py-8">
+                            <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                            <p className="text-gray-500">No students enrolled yet</p>
+                          </div>
+                        ) : (
+                          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {enrolledStudents.map((student: any) => (
+                              <div key={student.id} className="group bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-emerald-300 transition-all duration-300">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                    {student.name.charAt(0)}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-semibold text-[#1a2744] truncate">{student.name}</p>
+                                    <p className="text-xs text-gray-500 truncate">{student.email}</p>
+                                    {student.studentId && (
+                                      <p className="text-xs text-emerald-600 font-medium mt-1">ID: {student.studentId}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <span className="px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full">{course.code}</span>
-                  </div>
-                  <h4 className="text-xl font-bold text-[#1a2744] mb-2 group-hover:text-green-600 transition-colors">{course.name}</h4>
-                  <p className="text-sm text-gray-600">Batch {course.batch}</p>
-                </div>
-              ))}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 

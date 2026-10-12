@@ -21,6 +21,8 @@ import CalendarPage from './pages/CalendarPage';
 import Resources from './pages/Resources';
 import Contact from './pages/Contact';
 import Community from './pages/Community';
+import Quizzes from './pages/Quizzes';
+import QuizTake from './pages/QuizTake';
 
 // Dashboards
 import StudentDashboard from './pages/StudentDashboard';
@@ -59,6 +61,8 @@ function AppContent() {
           <Route path="/resources" element={<Resources />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/quizzes" element={<Quizzes />} />
+          <Route path="/quiz/:id" element={<QuizTake />} />
 
           {/* Protected Routes */}
           <Route path="/student/*" element={

@@ -31,6 +31,7 @@ export default function Footer() {
                 { path: '/faculty', label: 'Medical Faculty' },
                 { path: '/announcements', label: 'Announcements' },
                 { path: '/calendar', label: 'Academic Calendar' },
+                { path: '/quizzes', label: 'Quizzes' },
                 { path: '/community', label: 'Community' },
               ].map(link => (
                 <li key={link.path}>
